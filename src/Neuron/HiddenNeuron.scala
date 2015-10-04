@@ -4,7 +4,7 @@ import Activation.Sigmoid
 import Layer._
 import breeze.linalg._
 
-class HiddenNeuron(sinapses: Int, layer: Layer) extends Neuron(sinapses, layer) {
+class HiddenNeuron(id:Int, sinapses: Int, layer: Layer) extends Neuron(id, sinapses, layer) {
 
     override def initialize() = {
         weights = DenseVector.ones[Double](sinapses) * 0.5
@@ -17,8 +17,7 @@ class HiddenNeuron(sinapses: Int, layer: Layer) extends Neuron(sinapses, layer) 
 
     override def updateError(target: Double) = {
         _error = sum(weights :* DenseVector(layer.next.neurons.map(n => {
-            println(n)
-            0.0
+            n.error()
         }).toArray))
     }
 }

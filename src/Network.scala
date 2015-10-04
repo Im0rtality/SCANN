@@ -9,9 +9,9 @@ class Network(inputs: Int, hiddenLayers: Int, outputs: Int, hiddenSizes: Option[
     def initialize() = {
         layers = List(new InputLayer(inputs))
         layers = layers ++ List.tabulate(hiddenLayers) {
-            n => new HiddenLayer(hiddenLayerSizes(n))
+            n => new HiddenLayer(n + 1, hiddenLayerSizes(n))
         }
-        layers = layers :+ new OutputLayer(outputs)
+        layers = layers :+ new OutputLayer(hiddenLayers + 1, outputs)
 
         layers.sliding(3).foreach(group => {
             group(1).prev = group.head
@@ -60,9 +60,9 @@ class Network(inputs: Int, hiddenLayers: Int, outputs: Int, hiddenSizes: Option[
     //        }
     //    }
 
-    def calculateError(target: DenseVector[Double]) = {
+    def calculateError(target: DenseVector[Double]): List[Double] = {
         layers.reverse.foreach(_.updateError(target))
-        layers.last.neurons.map(_.error)
+        layers.last.neurons.map(_.error())
     }
 
     override def toString: String = {

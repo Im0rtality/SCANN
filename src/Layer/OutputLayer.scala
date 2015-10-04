@@ -2,15 +2,15 @@ package Layer
 
 import Neuron._
 
-class OutputLayer(size: Int) extends HiddenLayer(size) {
+class OutputLayer(id: Int, size: Int) extends Layer(id, size) {
 
     override def initialize() = {
-        neurons = List.fill(size) {
-            new OutputNeuron(prev.neurons.size, this)
+        neurons = List.tabulate(size) {
+            n => new OutputNeuron(n, prev.neurons.size, this)
         }
 
         super.initialize()
     }
 
-    override def toString = neurons.mkString("Output\t\t[", ", ", "]")
+    override def toString = neurons.mkString(s"#$id Output\t\t[", ", ", "]")
 }
