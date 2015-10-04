@@ -1,3 +1,4 @@
+import Network.{Parameters, Network}
 import breeze.linalg._
 
 object SCANN {
@@ -6,6 +7,7 @@ object SCANN {
         val sample = Samples.xor()
         val network = sample._1
         val dataset = sample._2
+        network.params = new Parameters(0.3, 1, 0.01)
         println(network)
         println()
         dataset.foreach({ case (input, target) =>

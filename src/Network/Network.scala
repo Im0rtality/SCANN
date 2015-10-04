@@ -1,9 +1,14 @@
+package Network
+
 import Layer._
 import breeze.linalg._
 
 class Network(inputs: Int, hiddenLayers: Int, outputs: Int, hiddenSizes: Option[List[Int]] = None) {
-    var hiddenLayerSizes: List[Int] = hiddenSizes.getOrElse(List.fill(hiddenLayers){Math.ceil((inputs + outputs) * 2 / 3).toInt})
+    var hiddenLayerSizes: List[Int] = hiddenSizes.getOrElse(List.fill(hiddenLayers) {
+        Math.ceil((inputs + outputs) * 2 / 3).toInt
+    })
 
+    var params: Parameters = Parameters.fresh()
     var layers: List[Layer] = _
 
     def initialize() = {
@@ -66,7 +71,7 @@ class Network(inputs: Int, hiddenLayers: Int, outputs: Int, hiddenSizes: Option[
     }
 
     override def toString: String = {
-        layers.mkString("\n")
+        params.toString + "\n" + layers.mkString("\n")
     }
 }
 

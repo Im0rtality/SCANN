@@ -21,6 +21,10 @@ abstract class Layer(val id: Int, val size: Int) {
         })
     }
 
+    def updateWeights(learningRate: Double, learningMomentum: Double) = {
+        neurons.foreach(_.updateWeights(learningRate, learningMomentum))
+    }
+
     def initialize() = {
         neurons.foreach(n => n.initialize())
     }

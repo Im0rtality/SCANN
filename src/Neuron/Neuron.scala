@@ -15,6 +15,8 @@ abstract class Neuron(val id: Int, val sinapses: Int, val layer: Layer) {
 
     def updateError(target: Double) = {}
 
+    def updateWeights(learningRate: Double, learningMomentum: Double) = {}
+
     def calculate(inputs: Any): Double
 
     override def toString: String = {
