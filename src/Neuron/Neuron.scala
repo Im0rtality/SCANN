@@ -18,6 +18,8 @@ abstract class Neuron(val id: Int, val sinapses: Int, val layer: Layer) {
     def calculate(inputs: Any): Double
 
     override def toString: String = {
-        weights.data.map(w => Env.PRECISION.format(w)).mkString(Console.GREEN + s"N#${layer.id}$id" + Console.RESET + "(", ", ", ")")
+        val sweights = weights.toArray.map(Env.PRECISION.format(_)).mkString("w:[", ",", "]")
+        val serror = ("δ:" + Env.PRECISION).format(_error)
+        Console.GREEN + s"N#${layer.id}$id" + Console.RESET + "(" + serror + ", " + sweights + ")"
     }
 }

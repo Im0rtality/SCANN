@@ -16,8 +16,8 @@ class HiddenNeuron(id:Int, sinapses: Int, layer: Layer) extends Neuron(id, sinap
     }
 
     override def updateError(target: Double) = {
-        _error = sum(weights :* DenseVector(layer.next.neurons.map(n => {
-            n.error()
-        }).toArray))
+        val weights = DenseVector(layer.next.neurons.map(n => n.weights.toArray.toList(id)).toArray)
+        val errors = DenseVector(layer.next.neurons.map(n => n.error()).toArray)
+        _error = sum(weights :* errors)
     }
 }

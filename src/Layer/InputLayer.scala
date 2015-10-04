@@ -17,5 +17,5 @@ class InputLayer(size: Int) extends Layer(0, size) {
         super.initialize()
     }
 
-    override def toString = neurons.mkString(s"#$id Input\t\t\t[", ", ", "]")
+    override def toString = neurons.mkString(s"#$id Input\t\t[", ", ", "]")
 }

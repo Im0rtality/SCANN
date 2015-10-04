@@ -8,17 +8,18 @@ object SCANN {
         val dataset = sample._2
         println(network)
         println()
-        //        dataset.foreach({ case (input, target) =>
-        //            val output = network.calculate(input)
-        //            var error = network.calculateError(target)
-        //            println(
-        //                "Target: %s\tOutput: %s, \tError: %f".format(
-        //                    target.toArray.mkString("[", " ", "]"),
-        //                    output.toArray.map(f => f - (f % 0.001)).mkString("[", " ", "]"),
-        //                    error
-        //                )
-        //            )
-        //        })
+        dataset.foreach({ case (input, target) =>
+            val output = network.calculate(input)
+            val error = network.calculateError(target)
+            println(
+                "Target: %s\tOutput: %s, \tError: %s".format(
+                    target.toArray.mkString("[", " ", "]"),
+                    output.toArray.map(f => f - (f % 0.001)).mkString("[", " ", "]"),
+                    error.mkString("[", " ", "]")
+                )
+            )
+            println(network)
+        })
     }
 }
 
