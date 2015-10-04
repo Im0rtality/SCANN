@@ -15,6 +15,6 @@ abstract class Neuron(val sinapses: Int, val layer: Layer) {
     def calculate(inputs: Any): Double
 
     override def toString: String = {
-        weights.data.map(w => "%.3f".format(w)).mkString("N(", ", ", ")")
+        weights.data.map(w => "%.3f".format(w)).mkString(Console.RED + "N" + Console.RESET + "(", ", ", ")")
     }
 }

@@ -1,13 +1,16 @@
 import Layer._
 import breeze.linalg._
 
-class Network(inputs: Int, hiddenLayers: Int, outputs: Int) {
-    var hiddenLayerSize: Int = Math.ceil((inputs + outputs) * 2 / 3).toInt
+class Network(inputs: Int, hiddenLayers: Int, outputs: Int, hiddenSize: Option[Int] = None) {
+    var hiddenLayerSize: Int = hiddenSize.getOrElse(Math.ceil((inputs + outputs) * 2 / 3).toInt)
+
     var layers: List[Layer] = _
 
     def initialize() = {
         layers = List(new InputLayer(inputs))
-        layers = layers ++ List.fill(hiddenLayers) {new HiddenLayer(hiddenLayerSize)}
+        layers = layers ++ List.fill(hiddenLayers) {
+            new HiddenLayer(hiddenLayerSize)
+        }
         layers = layers :+ new OutputLayer(outputs)
 
         layers.sliding(3).foreach(group => {
@@ -67,8 +70,8 @@ class Network(inputs: Int, hiddenLayers: Int, outputs: Int) {
 }
 
 object Network {
-    def apply(inputs: Int, hidden: Int, outputs: Int): Network = {
-        val network = new Network(inputs, hidden, outputs)
+    def apply(inputs: Int, hidden: Int, outputs: Int, hiddenSize: Option[Int] = None): Network = {
+        val network = new Network(inputs, hidden, outputs, hiddenSize)
         network.initialize()
         network
     }

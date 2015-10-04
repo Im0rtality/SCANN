@@ -15,6 +15,6 @@ class InputNeuron(layer: Layer) extends Neuron(1, layer) {
         input.asInstanceOf[Double]
     }
 
-    override def toString: String = "N(1.000)"
+    override def toString: String = Console.RED + "N" + Console.RESET
 }
 
