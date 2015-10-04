@@ -1,9 +1,9 @@
 package Network
 
 import Layer._
-import Utils.epsilonEquals
+import Utils._
 import breeze.linalg._
-import breeze.numerics.round
+import breeze.numerics._
 
 class Network(inputs: Int, hiddenLayers: Int, outputs: Int, hiddenSizes: Option[List[Int]] = None) {
     var hiddenLayerSizes: List[Int] = hiddenSizes.getOrElse(List.fill(hiddenLayers) {
@@ -42,28 +42,39 @@ class Network(inputs: Int, hiddenLayers: Int, outputs: Int, hiddenSizes: Option[
     }
 
     def train(samples: List[(DenseVector[Double], DenseVector[Double])]) = {
-        var iteration = 0
-        var error: DenseVector[Double] = DenseVector()
-        do {
-            error = samples.map({ case (input, target) =>
-                calculate(input)
-                val error = calculateError(target)
-                calculateWeight()
-                DenseVector(error.toArray)
-            }).last
+        Benchmark {
+            var iteration = 0
+            var error: Double = 0
+            do {
+                error = samples.map({ case (input, target) =>
+                    val output = calculate(input)
+                    calculateError(target)
+                    calculateWeight()
+                    sum(pow(target - output, 2)) * 0.5
+                }).last
 
-            iteration += 1
-        } while (Math.abs(max(error)) > params.minimumError && iteration < 100000)
+                iteration += 1
+            } while (error > params.minimumError && iteration < params.maxEpochs)
 
-        println(s"Iterations: $iteration")
-        println(this)
+            if (iteration < params.maxEpochs) {
+                println(Console.GREEN + "TRAINING SUCCEEDED" + Console.RESET)
+            } else {
+                println(Console.RED + "TRAINING FAILED" + Console.RESET)
+            }
+            println(s"Iterations: \t$iteration")
+            println("Error^2: \t\t%.5f" format error)
+        }
+        //        println(this)
     }
 
     def validate(samples: List[(DenseVector[Double], DenseVector[Double])]): Double = {
-        val outputs = samples.map({ case (input, target) =>
-            val output = calculate(input)
-            (output, target, epsilonEquals(round(output), target))
-        })
+        println("\n\nVALIDATING\n")
+        val outputs = Benchmark {
+            samples.map({ case (input, target) =>
+                val output = calculate(input)
+                (output, target, epsilonEquals(round(output), target))
+            })
+        }
 
         //println(outputs.mkString("\n"))
 

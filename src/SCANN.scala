@@ -7,14 +7,14 @@ object SCANN {
         val sample = Samples.simple1D()
         val network = sample._1
         val dataset = sample._2
-        network.params = new Parameters(0.03, 1, 0.001)
+        network.params = new Parameters(0.3, 0, 0.00001, 1E6)
         println(network)
         println()
 
         network.train(dataset)
 
         val accuracy = network.validate(dataset)
-        println("Accuracy: %.2f%%".format(accuracy * 100.0))
+        println("Accuracy:\t\t%.2f%%".format(accuracy * 100.0))
     }
 }
 
@@ -23,10 +23,10 @@ object Samples {
         (
             Network(2, 2, 1, Some(List(3, 2))),
             List(
-                (DenseVector(0.0, 0.0), DenseVector(0.0)),
-                (DenseVector(1.0, 0.0), DenseVector(1.0)),
-                (DenseVector(0.0, 1.0), DenseVector(1.0)),
-                (DenseVector(1.0, 1.0), DenseVector(0.0))
+                (DenseVector(0.0, 0.0, 1d), DenseVector(0.0)),
+                (DenseVector(1.0, 0.0, 1d), DenseVector(1.0)),
+                (DenseVector(0.0, 1.0, 1d), DenseVector(1.0)),
+                (DenseVector(1.0, 1.0, 1d), DenseVector(0.0))
             )
             )
     }
