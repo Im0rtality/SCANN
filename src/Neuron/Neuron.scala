@@ -19,9 +19,9 @@ abstract class Neuron(val id: Int, val sinapses: Int, val layer: Layer) {
 
     def calculate(inputs: Any): Double
 
+    def delta(): Double = output * (1 - output)
+
     override def toString: String = {
-        val sweights = weights.toArray.map(Env.PRECISION.format(_)).mkString("w:[", ",", "]")
-        val serror = ("δ:" + Env.PRECISION).format(_error)
-        Console.GREEN + s"N#${layer.id}$id" + Console.RESET + "(" + serror + ", " + sweights + ")"
+        Console.GREEN + s"N#${layer.id}$id" + Console.RESET + weights.toArray.map(Env.PRECISION.format(_)).mkString("[", ",", "]")
     }
 }

@@ -5,7 +5,10 @@ import breeze.linalg.DenseVector
 
 class InputLayer(size: Int) extends Layer(0, size) {
 
-    override def calculate(inputs: DenseVector[Double]): DenseVector[Double] = inputs
+    override def calculate(inputs: DenseVector[Double]): DenseVector[Double] = {
+        output = DenseVector(neurons.zip(inputs.toArray).map({ case (n, i) => n.calculate(i)}).toArray)
+        output
+    }
 
     override def updateError(target: DenseVector[Double]): Unit = {}
 

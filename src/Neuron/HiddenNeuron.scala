@@ -7,7 +7,7 @@ import breeze.linalg._
 class HiddenNeuron(id: Int, sinapses: Int, layer: Layer) extends Neuron(id, sinapses, layer) {
 
     override def initialize() = {
-        weights = DenseVector.ones[Double](sinapses) * 0.5
+        weights = DenseVector.rand(sinapses)
     }
 
     override def calculate(input: Any): Double = {
@@ -16,12 +16,13 @@ class HiddenNeuron(id: Int, sinapses: Int, layer: Layer) extends Neuron(id, sina
     }
 
     override def updateWeights(learningRate: Double, learningMomentum: Double) = {
-
+        val prevOutputs = DenseVector(layer.prev.neurons.map(_.output).toArray)
+        weights = weights :+ (learningRate * _error * prevOutputs)
     }
 
     override def updateError(target: Double) = {
-        val weights = DenseVector(layer.next.neurons.map(n => n.weights.toArray.toList(id)).toArray)
-        val errors = DenseVector(layer.next.neurons.map(n => n.error()).toArray)
-        _error = sum(weights :* errors)
+        val nextWeights = DenseVector(layer.next.neurons.map(n => n.weights.toArray.toList(id)).toArray)
+        val nextErrors = DenseVector(layer.next.neurons.map(n => n.error()).toArray)
+        _error = delta() * sum(nextWeights :* nextErrors)
     }
 }

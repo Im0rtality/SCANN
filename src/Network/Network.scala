@@ -1,7 +1,9 @@
 package Network
 
 import Layer._
+import Utils.epsilonEquals
 import breeze.linalg._
+import breeze.numerics.round
 
 class Network(inputs: Int, hiddenLayers: Int, outputs: Int, hiddenSizes: Option[List[Int]] = None) {
     var hiddenLayerSizes: List[Int] = hiddenSizes.getOrElse(List.fill(hiddenLayers) {
@@ -39,35 +41,42 @@ class Network(inputs: Int, hiddenLayers: Int, outputs: Int, hiddenSizes: Option[
         output
     }
 
-    //    def train(samples: List[(DenseVector[Double], DenseVector[Double])]) = {
-    //        var correct = 9999
-    //        var index = 0
-    //        println("Dataset size:\t%d\n".format(samples.size))
-    //        try {
-    //            //            while (true) {
-    //            samples.foreach(sample => {
-    //                println("Iteration #%d".format(index))
-    //                println("Classifying:\t%s".format(sample._1))
-    //
-    //                val actual = calculate(sample._1)
-    //                println("Expected:\t\t%s\nActual:  \t\t%s".format(sample._2, actual))
-    //                println("SqError:\t\t%f".format(error(sample._2, actual)))
-    //                //                    backpropagate((sample._2 - actual).toArray.toList)
-    //
-    //                index += 1
-    //                if (samples.size <= index) {
-    //                    throw new IllegalStateException("breaking loop")
-    //                }
-    //            })
-    //            //            }
-    //        } catch {
-    //            case e: IllegalStateException =>
-    //        }
-    //    }
+    def train(samples: List[(DenseVector[Double], DenseVector[Double])]) = {
+        var iteration = 0
+        var error: DenseVector[Double] = DenseVector()
+        do {
+            error = samples.map({ case (input, target) =>
+                calculate(input)
+                val error = calculateError(target)
+                calculateWeight()
+                DenseVector(error.toArray)
+            }).last
+
+            iteration += 1
+        } while (Math.abs(max(error)) > params.minimumError && iteration < 100000)
+
+        println(s"Iterations: $iteration")
+        println(this)
+    }
+
+    def validate(samples: List[(DenseVector[Double], DenseVector[Double])]): Double = {
+        val outputs = samples.map({ case (input, target) =>
+            val output = calculate(input)
+            (output, target, epsilonEquals(round(output), target))
+        })
+
+        //println(outputs.mkString("\n"))
+
+        (0.0 + outputs.count({ case (_, _, pass) => pass })) / samples.size
+    }
 
     def calculateError(target: DenseVector[Double]): List[Double] = {
         layers.reverse.foreach(_.updateError(target))
         layers.last.neurons.map(_.error())
+    }
+
+    def calculateWeight() = {
+        layers.reverse.foreach(_.updateWeights(params.learningRate, params.learningMomentum))
     }
 
     override def toString: String = {

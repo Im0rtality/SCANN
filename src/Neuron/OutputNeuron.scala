@@ -6,11 +6,11 @@ import breeze.linalg._
 class OutputNeuron(id: Int, sinapses: Int, layer: Layer) extends HiddenNeuron(id, sinapses, layer) {
 
     override def updateError(target: Double) = {
-        _error = output * (1 - output) * (target - output)
+        _error = delta() * (target - output)
     }
 
     override def updateWeights(learningRate: Double, learningMomentum: Double) = {
-        val outputs = DenseVector(layer.prev.neurons.map(_.output).toArray)
-        weights = weights :+ learningRate * _error * outputs
+        val diff = learningRate * _error * DenseVector(layer.prev.neurons.map(_.output).toArray)
+        weights = weights :+ diff
     }
 }
