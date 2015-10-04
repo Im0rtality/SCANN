@@ -1,6 +1,6 @@
 package Layer
 
-import Neuron.GenericNeuron
+import Neuron.HiddenNeuron
 import breeze.linalg.DenseVector
 
 class HiddenLayer(size: Int) extends Layer(size) {
@@ -17,7 +17,7 @@ class HiddenLayer(size: Int) extends Layer(size) {
 
     override def initialize() = {
         neurons = List.fill(size) {
-            new GenericNeuron(prev.neurons.size, this)
+            new HiddenNeuron(prev.neurons.size, this)
         }
 
         super.initialize()

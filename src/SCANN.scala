@@ -3,42 +3,35 @@ import breeze.linalg._
 object SCANN {
     def main(args: Array[String]) {
 
-        val network = Network(2, 1, 1)
+        val sample = Samples.xor()
+        val network = sample._1
+        val dataset = sample._2
         println(network)
-        network.calculate(DenseVector(2.0, 4.0))
+        println()
+        //        dataset.foreach({ case (input, target) =>
+        //            val output = network.calculate(input)
+        //            var error = network.calculateError(target)
+        //            println(
+        //                "Target: %s\tOutput: %s, \tError: %f".format(
+        //                    target.toArray.mkString("[", " ", "]"),
+        //                    output.toArray.map(f => f - (f % 0.001)).mkString("[", " ", "]"),
+        //                    error
+        //                )
+        //            )
+        //        })
     }
 }
 
-//object Samples {
-//    def sample1(): List[(DenseVector[Double], DenseVector[Double])] = {
-//        //List(2, 1)
-//        List(
-//            (DenseVector(2.0, 4.0), DenseVector(0.0)),
-//            (DenseVector(3.0, 7.0), DenseVector(0.0)),
-//            (DenseVector(5.0, 8.0), DenseVector(0.0)),
-//            (DenseVector(3.0, 1.0), DenseVector(1.0)),
-//            (DenseVector(5.0, 1.0), DenseVector(1.0)),
-//            (DenseVector(7.0, 4.0), DenseVector(1.0))
-//        )
-//    }
-//
-//    def xor(): List[(DenseVector[Double], DenseVector[Double])] = {
-//        //        List(2, 3, 1)
-//        List(
-//            (DenseVector(0.0, 0.0), DenseVector(0.0)),
-//            (DenseVector(1.0, 0.0), DenseVector(1.0)),
-//            (DenseVector(0.0, 1.0), DenseVector(1.0)),
-//            (DenseVector(1.0, 1.0), DenseVector(0.0))
-//        )
-//    }
-//
-//    def majority(): List[(DenseVector[Double], DenseVector[Double])] = {
-//        //        List(4, 1)
-//        List(
-//            (DenseVector(0.0, 0.0, 0,0, 0,0), DenseVector(0.0)),
-//            (DenseVector(1.0, 0.0), DenseVector(1.0)),
-//            (DenseVector(0.0, 1.0), DenseVector(1.0)),
-//            (DenseVector(1.0, 1.0), DenseVector(0.0))
-//        )
-//    }
-//}
+object Samples {
+    def xor(): (Network, List[(DenseVector[Double], DenseVector[Double])]) = {
+        (
+            Network(2, 2, 1, Some(List(3, 2))),
+            List(
+                (DenseVector(0.0, 0.0), DenseVector(0.0)),
+                (DenseVector(1.0, 0.0), DenseVector(1.0)),
+                (DenseVector(0.0, 1.0), DenseVector(1.0)),
+                (DenseVector(1.0, 1.0), DenseVector(0.0))
+            )
+            )
+    }
+}

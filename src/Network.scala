@@ -1,15 +1,15 @@
 import Layer._
 import breeze.linalg._
 
-class Network(inputs: Int, hiddenLayers: Int, outputs: Int, hiddenSize: Option[Int] = None) {
-    var hiddenLayerSize: Int = hiddenSize.getOrElse(Math.ceil((inputs + outputs) * 2 / 3).toInt)
+class Network(inputs: Int, hiddenLayers: Int, outputs: Int, hiddenSizes: Option[List[Int]] = None) {
+    var hiddenLayerSizes: List[Int] = hiddenSizes.getOrElse(List.fill(hiddenLayers){Math.ceil((inputs + outputs) * 2 / 3).toInt})
 
     var layers: List[Layer] = _
 
     def initialize() = {
         layers = List(new InputLayer(inputs))
-        layers = layers ++ List.fill(hiddenLayers) {
-            new HiddenLayer(hiddenLayerSize)
+        layers = layers ++ List.tabulate(hiddenLayers) {
+            n => new HiddenLayer(hiddenLayerSizes(n))
         }
         layers = layers :+ new OutputLayer(outputs)
 
@@ -62,6 +62,7 @@ class Network(inputs: Int, hiddenLayers: Int, outputs: Int, hiddenSize: Option[I
 
     def calculateError(target: DenseVector[Double]) = {
         layers.reverse.foreach(_.updateError(target))
+        layers.last.neurons.map(_.error)
     }
 
     override def toString: String = {
@@ -70,7 +71,7 @@ class Network(inputs: Int, hiddenLayers: Int, outputs: Int, hiddenSize: Option[I
 }
 
 object Network {
-    def apply(inputs: Int, hidden: Int, outputs: Int, hiddenSize: Option[Int] = None): Network = {
+    def apply(inputs: Int, hidden: Int, outputs: Int, hiddenSize: Option[List[Int]] = None): Network = {
         val network = new Network(inputs, hidden, outputs, hiddenSize)
         network.initialize()
         network
