@@ -17,7 +17,7 @@ object SCANN {
     private def prepareIris(): (Network, DataSet) = {
         val dataset = Loader.fromCsv("./data/iris.csv")
         val network = Network(dataset.inputLayerSize, 1, dataset.outputLayerSize, Some(List(4)))
-        network.params = new Parameters(0.1, 0.9, 0.005, 1E3) // => gives ~96% accuracy
+        network.params = new Parameters(0.3, 0.9, 0.005, 1E3) // => gives ~96% accuracy
         (network, dataset)
     }
 

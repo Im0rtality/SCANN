@@ -10,7 +10,7 @@ class OutputNeuron(id: Int, sinapses: Int, layer: Layer) extends HiddenNeuron(id
     }
 
     override def updateWeights(learningRate: Double, learningMomentum: Double) = {
-        val diff = learningRate * _error * DenseVector(layer.prev.neurons.map(_.output).toArray)
+        val diff = learningRate * _error * DenseVector(layer.prev.neurons.map(_.output).toArray :+ 1.0)
         weights = weights :+ diff
     }
 }

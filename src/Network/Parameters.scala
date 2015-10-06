@@ -2,7 +2,7 @@ package Network
 
 object Parameters {
     def fresh(): Parameters = {
-        new Parameters(0.3, 0.9, 0.01, 1E6)
+        new Parameters(0.3, 0, 0.001, 1E9)
     }
 }
 

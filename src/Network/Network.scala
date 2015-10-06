@@ -1,5 +1,6 @@
 package Network
 
+import DataSet.Sample
 import Layer._
 import Utils._
 import breeze.linalg._
@@ -7,7 +8,7 @@ import breeze.numerics._
 
 class Network(inputs: Int, hiddenLayers: Int, outputs: Int, hiddenSizes: Option[List[Int]] = None) {
     var hiddenLayerSizes: List[Int] = hiddenSizes.getOrElse(List.fill(hiddenLayers) {
-        Math.ceil((inputs + outputs) * 2 / 3).toInt
+        Math.ceil((inputs + outputs) / 2.0).toInt
     })
 
     var params: Parameters = Parameters.fresh()
@@ -16,9 +17,9 @@ class Network(inputs: Int, hiddenLayers: Int, outputs: Int, hiddenSizes: Option[
     def initialize() = {
         layers = List(new InputLayer(inputs))
         layers = layers ++ List.tabulate(hiddenLayers) {
-            n => new HiddenLayer(n + 1, hiddenLayerSizes(n))
+            n => new HiddenLayer(n, hiddenLayerSizes(n))
         }
-        layers = layers :+ new OutputLayer(hiddenLayers + 1, outputs)
+        layers = layers :+ new OutputLayer(hiddenLayers, outputs)
 
         layers.sliding(3).foreach(group => {
             group(1).prev = group.head
@@ -41,38 +42,38 @@ class Network(inputs: Int, hiddenLayers: Int, outputs: Int, hiddenSizes: Option[
         output
     }
 
-    def train(samples: List[(DenseVector[Double], DenseVector[Double])]) = {
+    def train(samples: List[Sample]) = {
         Benchmark {
             var iteration = 0
+            var correct = 0
             var error: Double = 0
             do {
-                error = samples.map({ case (input, target) =>
-                    val output = calculate(input)
-                    calculateError(target)
+                error = samples.map(sample => {
+                    val output = calculate(sample.input)
+                    calculateError(sample.target)
                     calculateWeight()
-                    sum(pow(target - output, 2)) * 0.5
-                }).last
+
+                    Functions.meanSquaredError(sample.target, output)
+                }).sum / samples.size
+
 
                 iteration += 1
-            } while (error > params.minimumError && iteration < params.maxEpochs)
+                println("#%9d   => %.10f".format(iteration, error))
+            } while (params.minimumError < error && iteration < params.maxEpochs)
 
-            if (iteration < params.maxEpochs) {
-                println(Console.GREEN + "TRAINING SUCCEEDED" + Console.RESET)
-            } else {
-                println(Console.RED + "TRAINING FAILED" + Console.RESET)
-            }
+            println(Console.YELLOW + "TRAINING FINISHED" + Console.RESET)
             println(s"Iterations: \t$iteration")
-            println("Error^2: \t\t%.5f" format error)
+            println("Error^2: \t\t%.5f".format(error))
         }
         //        println(this)
     }
 
-    def validate(samples: List[(DenseVector[Double], DenseVector[Double])]): Double = {
+    def validate(samples: List[Sample]): Double = {
         println("\n\nVALIDATING\n")
         val outputs = Benchmark {
-            samples.map({ case (input, target) =>
-                val output = calculate(input)
-                (output, target, epsilonEquals(round(output), target))
+            samples.map(sample => {
+                val output = calculate(sample.input)
+                (output, sample.target, epsilonEquals(round(output), sample.target))
             })
         }
 
