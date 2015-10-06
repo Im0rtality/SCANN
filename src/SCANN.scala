@@ -1,52 +1,36 @@
-import Network.{Parameters, Network}
-import breeze.linalg._
+import DataSet._
+import Network._
 
 object SCANN {
     def main(args: Array[String]) {
-
-        val sample = Samples.simple1D()
-        val network = sample._1
-        val dataset = sample._2
-        network.params = new Parameters(0.3, 0, 0.00001, 1E6)
+        val (network, dataset) = prepareIris()
+//         val (network, dataset) = prepareXor()
+//         val (network, dataset) = prepare1D()
         println(network)
         println()
+        network.train(dataset.input)
 
-        network.train(dataset)
-
-        val accuracy = network.validate(dataset)
+        val accuracy = network.validate(dataset.input)
         println("Accuracy:\t\t%.2f%%".format(accuracy * 100.0))
     }
-}
 
-object Samples {
-    def xor(): (Network, List[(DenseVector[Double], DenseVector[Double])]) = {
-        (
-            Network(2, 2, 1, Some(List(3, 2))),
-            List(
-                (DenseVector(0.0, 0.0, 1d), DenseVector(0.0)),
-                (DenseVector(1.0, 0.0, 1d), DenseVector(1.0)),
-                (DenseVector(0.0, 1.0, 1d), DenseVector(1.0)),
-                (DenseVector(1.0, 1.0, 1d), DenseVector(0.0))
-            )
-            )
+    private def prepareIris(): (Network, DataSet) = {
+        val dataset = Loader.fromCsv("./data/iris.csv")
+        val network = Network(dataset.inputLayerSize, 1, dataset.outputLayerSize, Some(List(4)))
+        network.params = new Parameters(0.1, 0.9, 0.005, 1E3) // => gives ~96% accuracy
+        (network, dataset)
     }
 
-    def simple1D(): (Network, List[(DenseVector[Double], DenseVector[Double])]) = {
-        (
-            // class = input >= 0.5 ? 1 : 0
-            Network(2, 0, 1),
-            List(
-                (DenseVector(0.0, 1d), DenseVector(0.0)),
-                (DenseVector(0.1, 1d), DenseVector(0.0)),
-                (DenseVector(0.2, 1d), DenseVector(0.0)),
-                (DenseVector(0.3, 1d), DenseVector(0.0)),
-                (DenseVector(0.4, 1d), DenseVector(0.0)),
-                (DenseVector(0.5, 1d), DenseVector(1.0)),
-                (DenseVector(0.6, 1d), DenseVector(1.0)),
-                (DenseVector(0.7, 1d), DenseVector(1.0)),
-                (DenseVector(0.8, 1d), DenseVector(1.0)),
-                (DenseVector(0.9, 1d), DenseVector(1.0))
-            )
-            )
+    private def prepareXor(): (Network, DataSet) = {
+        val dataset = Loader.fromCsv("./data/xor.csv")
+        val network = Network(dataset.inputLayerSize, 1, dataset.outputLayerSize, Some(List(2)))
+        (network, dataset)
+    }
+
+    private def prepare1D(): (Network, DataSet) = {
+        val dataset = Loader.fromCsv("./data/1D-sample.csv")
+        val network = Network(dataset.inputLayerSize, 0, dataset.outputLayerSize)
+        network.params = new Parameters(0.5, 0, 0.001, 1E3)
+        (network, dataset)
     }
 }
