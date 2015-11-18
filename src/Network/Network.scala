@@ -7,8 +7,6 @@ import breeze.linalg._
 import breeze.numerics._
 import scala.pickling.Defaults._, scala.pickling.json._
 import scala.io.Source
-import scalax.io.Resource
-import scala.pickling.shareNothing._
 
 class Network(inputs: Int, hiddenLayers: Int, outputs: Int, hiddenSizes: Option[List[Int]] = None) {
     var hiddenLayerSizes: List[Int] = hiddenSizes.getOrElse(List.fill(hiddenLayers) {
@@ -63,7 +61,7 @@ class Network(inputs: Int, hiddenLayers: Int, outputs: Int, hiddenSizes: Option[
                     calculateWeight()
 
                     Functions.meanSquaredError(sample.target, output)
-                }).sum / samples.size
+                }).max
 
 
                 iteration += 1
