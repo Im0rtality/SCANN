@@ -65,7 +65,7 @@ class Network(inputs: Int, hiddenLayers: Int, outputs: Int, hiddenSizes: Option[
 
 
                 iteration += 1
-                println("#%9d   => %.10f".format(iteration, error))
+//                println("#%9d   => %.10f".format(iteration, error))
             } while (params.minimumError < error && iteration < params.maxEpochs)
 
             println(Console.YELLOW + "TRAINING FINISHED" + Console.RESET)
@@ -98,7 +98,7 @@ class Network(inputs: Int, hiddenLayers: Int, outputs: Int, hiddenSizes: Option[
     }
 
     override def toString: String = {
-        params.toString + "\n" + layers.mkString("\n")
+        params.toString + "\nArchitecture:\t" + layers.map(_.neurons.length).mkString("-")
     }
 }
 

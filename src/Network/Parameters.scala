@@ -6,7 +6,8 @@ object Parameters {
     }
 }
 
-class Parameters(var learningRate: Double, var learningMomentum: Double, val minimumError: Double, val maxEpochs: Double) {
+class Parameters(var learningRate: Double, var learningMomentum: Double, val minimumError: Double, _maxEpochs: Double) {
+    val maxEpochs: Long = _maxEpochs.round
 
-    override def toString = s"Params: rate=$learningRate, momentum=$learningMomentum, minErr=$minimumError, maxEpochs=$maxEpochs"
+    override def toString = s"Params:\t\trate=$learningRate, momentum=$learningMomentum, minErr=$minimumError, maxEpochs=$maxEpochs"
 }
