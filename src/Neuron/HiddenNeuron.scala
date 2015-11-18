@@ -9,7 +9,7 @@ class HiddenNeuron(id: Int, sinapses: Int, layer: Layer) extends Neuron(id, sina
     var lastWeightDelta: DenseVector[Double] = DenseVector.zeros(sinapses + 1)
 
     override def initialize() = {
-        weights = DenseVector.fill[Double](sinapses + 1)(Math.random() * 2 - 1)
+        weights = DenseVector.rand(sinapses + 1) :* 2.0 - 1.0
     }
 
     override def calculate(input: Any): Double = {

@@ -21,6 +21,18 @@ abstract class Neuron(val id: Int, val sinapses: Int, val layer: Layer) {
 
     def delta(): Double = output * (1 - output)
 
+    def store(): Seq[Double] = {
+        if (weights != null) {
+            weights.toArray.toList
+        } else {
+            List()
+        }
+    }
+
+    def load(data: List[Double]) = {
+        weights = DenseVector(data.toArray)
+    }
+
     override def toString: String = {
         Console.GREEN + s"N#${layer.id}$id" + Console.RESET + weights.toArray.map(Env.PRECISION.format(_)).mkString("[", ",", "]")
     }

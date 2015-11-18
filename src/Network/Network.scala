@@ -5,6 +5,9 @@ import Layer._
 import Utils._
 import breeze.linalg._
 import breeze.numerics._
+import scala.pickling.Defaults._, scala.pickling.json._
+import scala.io.Source
+import scalax.io.Resource
 
 class Network(inputs: Int, hiddenLayers: Int, outputs: Int, hiddenSizes: Option[List[Int]] = None) {
     var hiddenLayerSizes: List[Int] = hiddenSizes.getOrElse(List.fill(hiddenLayers) {
@@ -32,6 +35,11 @@ class Network(inputs: Int, hiddenLayers: Int, outputs: Int, hiddenSizes: Option[
         layers.foreach(l => l.initialize())
 
         layers
+    }
+
+    def store(file: String) = {
+        Resource.fromFile(file).truncate(0)
+        Resource.fromFile(file).write(this.pickle.value)
     }
 
     def calculate(input: DenseVector[Double]): DenseVector[Double] = {
@@ -65,7 +73,6 @@ class Network(inputs: Int, hiddenLayers: Int, outputs: Int, hiddenSizes: Option[
             println(s"Iterations: \t$iteration")
             println("Error^2: \t\t%.5f".format(error))
         }
-        //        println(this)
     }
 
     def validate(samples: List[Sample]): Double = {
@@ -100,6 +107,11 @@ object Network {
     def apply(inputs: Int, hidden: Int, outputs: Int, hiddenSize: Option[List[Int]] = None): Network = {
         val network = new Network(inputs, hidden, outputs, hiddenSize)
         network.initialize()
+        network
+    }
+
+    def loadFrom(file: String): Network = {
+        val network: Network = JSONPickle(Source.fromFile(file).mkString).unpickle[Network]
         network
     }
 }

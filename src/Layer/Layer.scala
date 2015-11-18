@@ -28,4 +28,12 @@ abstract class Layer(val id: Int, val size: Int) {
     def initialize() = {
         neurons.foreach(n => n.initialize())
     }
+
+    def store(): Seq[Seq[Double]] = {
+        neurons.map(_.store())
+    }
+
+    def load(data: List[List[Double]]) = {
+        neurons.zip(data).foreach({case (n,w) => n.load(w)})
+    }
 }
