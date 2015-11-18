@@ -8,6 +8,7 @@ import breeze.numerics._
 import scala.pickling.Defaults._, scala.pickling.json._
 import scala.io.Source
 import scalax.io.Resource
+import scala.pickling.shareNothing._
 
 class Network(inputs: Int, hiddenLayers: Int, outputs: Int, hiddenSizes: Option[List[Int]] = None) {
     var hiddenLayerSizes: List[Int] = hiddenSizes.getOrElse(List.fill(hiddenLayers) {
@@ -38,8 +39,8 @@ class Network(inputs: Int, hiddenLayers: Int, outputs: Int, hiddenSizes: Option[
     }
 
     def store(file: String) = {
-        Resource.fromFile(file).truncate(0)
-        Resource.fromFile(file).write(this.pickle.value)
+//        Resource.fromFile(file).truncate(0)
+//        Resource.fromFile(file).write(this.pickle.value)
     }
 
     def calculate(input: DenseVector[Double]): DenseVector[Double] = {
