@@ -1,8 +1,7 @@
 package Network
 
-import java.io.File
+import java.io.{FileOutputStream, File}
 import java.nio.charset.StandardCharsets
-import java.nio.file._
 import play.api.libs.json._
 
 import scala.io.Source
@@ -39,11 +38,9 @@ object Cache {
             )
         )
 
-        Files.write(
-            Paths.get(network.cacheFile),
-            Json.toJson(weights).toString().getBytes(StandardCharsets.UTF_8),
-            StandardOpenOption.TRUNCATE_EXISTING
-        )
+        val stream = new FileOutputStream(network.cacheFile, false)
+        stream.write(Json.toJson(weights).toString().getBytes(StandardCharsets.UTF_8))
+        stream.close()
 
         network
     }
