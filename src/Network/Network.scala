@@ -10,7 +10,7 @@ import scala.io.Source
 
 class Network(inputs: Int, hiddenLayers: Int, outputs: Int, hiddenSizes: Option[List[Int]] = None) {
     var hiddenLayerSizes: List[Int] = hiddenSizes.getOrElse(List.fill(hiddenLayers) {
-        Math.ceil((inputs + outputs) / 2.0).toInt
+        ceil((inputs + outputs) / 2.0).toInt
     })
 
     var params: Parameters = Parameters.fresh()
