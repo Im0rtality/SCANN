@@ -1,13 +1,23 @@
 package Network
 
+import play.api.libs.json.Reads
+import play.api.libs.json._
+import play.api.libs.functional.syntax._
+
 object Parameters {
     def fresh(): Parameters = {
-        new Parameters(0.3, 0, 0.001, 1E9)
+        new Parameters(0.3, 0, 0.001, 1000)
     }
+
+    implicit val parametersReader: Reads[Parameters] = (
+        (__ \ "rate").read[Double] and
+            (__ \ "momentum").read[Double] and
+            (__ \ "error").read[Double] and
+            (__ \ "epochs").read[Int]
+        ) (Parameters.apply _)
 }
 
-class Parameters(var learningRate: Double, var learningMomentum: Double, val minimumError: Double, _maxEpochs: Double) {
-    val maxEpochs: Long = _maxEpochs.round
+case class Parameters(rate: Double, momentum: Double, error: Double, epochs: Int) {
 
-    override def toString = s"Params:\t\trate=$learningRate, momentum=$learningMomentum, minErr=$minimumError, maxEpochs=$maxEpochs"
+    override def toString = s"Params:\t\trate=$rate, momentum=$momentum, error=$error, epochs=$epochs"
 }

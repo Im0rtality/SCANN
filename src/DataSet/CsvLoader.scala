@@ -25,5 +25,11 @@ class CsvLoader(val fileName: String) {
     }
 }
 
+object CsvLoader {
+    def apply(fileName: String): DataSet = {
+        new CsvLoader(fileName).load
+    }
+}
+
 
 

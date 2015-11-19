@@ -5,8 +5,6 @@ import Layer._
 import Utils._
 import breeze.linalg._
 import breeze.numerics._
-import scala.pickling.Defaults._, scala.pickling.json._
-import scala.io.Source
 
 class Network(inputs: Int, hiddenLayers: Int, outputs: Int, hiddenSizes: Option[List[Int]] = None) {
     var hiddenLayerSizes: List[Int] = hiddenSizes.getOrElse(List.fill(hiddenLayers) {
@@ -50,9 +48,8 @@ class Network(inputs: Int, hiddenLayers: Int, outputs: Int, hiddenSizes: Option[
     }
 
     def train(samples: List[Sample]) = {
-        Benchmark {
+        Benchmark({
             var iteration = 0
-            var correct = 0
             var error: Double = 0
             do {
                 error = samples.map(sample => {
@@ -65,25 +62,20 @@ class Network(inputs: Int, hiddenLayers: Int, outputs: Int, hiddenSizes: Option[
 
 
                 iteration += 1
-//                println("#%9d   => %.10f".format(iteration, error))
-            } while (params.minimumError < error && iteration < params.maxEpochs)
+            } while (params.error < error && iteration < params.epochs)
 
-            println(Console.YELLOW + "TRAINING FINISHED" + Console.RESET)
             println(s"Iterations: \t$iteration")
             println("Error^2: \t\t%.5f".format(error))
-        }
+        }, "TRAINING")
     }
 
     def validate(samples: List[Sample]): Double = {
-        println("\n\nVALIDATING\n")
-        val outputs = Benchmark {
+        val outputs = Benchmark({
             samples.map(sample => {
                 val output = calculate(sample.input)
                 (output, sample.target, epsilonEquals(round(output), sample.target))
             })
-        }
-
-        //println(outputs.mkString("\n"))
+        }, "VALIDATING")
 
         (0.0 + outputs.count({ case (_, _, pass) => pass })) / samples.size
     }
@@ -94,7 +86,7 @@ class Network(inputs: Int, hiddenLayers: Int, outputs: Int, hiddenSizes: Option[
     }
 
     def calculateWeight() = {
-        layers.reverse.foreach(_.updateWeights(params.learningRate, params.learningMomentum))
+        layers.reverse.foreach(_.updateWeights(params.rate, params.momentum))
     }
 
     override def toString: String = {
@@ -106,11 +98,6 @@ object Network {
     def apply(inputs: Int, hidden: Int, outputs: Int, hiddenSize: Option[List[Int]] = None): Network = {
         val network = new Network(inputs, hidden, outputs, hiddenSize)
         network.initialize()
-        network
-    }
-
-    def loadFrom(file: String): Network = {
-        val network: Network = JSONPickle(Source.fromFile(file).mkString).unpickle[Network]
         network
     }
 }
