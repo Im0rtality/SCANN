@@ -7,7 +7,7 @@ object Benchmark {
         val t0 = System.nanoTime()
         val result = block // call-by-name
         val t1 = System.nanoTime()
-        println("Elapsed time: \t" + (t1 - t0) / 1E9 + "s")
+        println("Elapsed time: \t%.2fs".format((t1 - t0) / 1E9))
         println(Console.YELLOW + caption + " done" + Console.RESET)
         result
     }
