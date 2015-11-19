@@ -8,13 +8,18 @@ import scala.io.Source
 
 object Cache {
     def apply(network: Network, block: => Network): Network = {
-        if (has(network)) {
-            println("Cached weights found. Loading...")
-            get(network)
-        } else {
+        if (network.cacheFile.eq("")) {
             val result = block
-            set(result)
             result
+        } else {
+            if (has(network)) {
+                println("Cached weights found. Loading...")
+                get(network)
+            } else {
+                val result = block
+                set(result)
+                result
+            }
         }
     }
 
