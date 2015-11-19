@@ -13,6 +13,8 @@ object Builder {
         val dataSet = Benchmark({
             CsvLoader((json \ "dataset").as[String])
         }, "Loading dataset")
+        println("DataSet size: %d items (%d inputs, %d outputs)"
+            .format(dataSet.input.length, dataSet.inputLayerSize, dataSet.outputLayerSize))
 
         val hidden = (json \ "architecture" \ "hidden").as[List[Int]]
 
