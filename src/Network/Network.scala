@@ -59,6 +59,7 @@ class Network(inputs: Int, hiddenLayers: Int, outputs: Int, hiddenSizes: Option[
 
 
                 iteration += 1
+                println(s"#$iteration\t\tmax MSE: \t$error")
             } while (params.error < error && iteration < params.epochs)
 
             println(s"Iterations: \t$iteration")
