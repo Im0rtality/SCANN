@@ -1,12 +1,12 @@
 package Network
 
-import java.io.FileInputStream
+import java.io.{File, FileInputStream}
 
 import DataSet.{CsvLoader, DataSet}
 import play.api.libs.json.Json
 
 object Builder {
-    def build(descriptor: String): (Network, DataSet) = {
+    def build(descriptor: File): (Network, DataSet) = {
         val json = Json.parse(new FileInputStream(descriptor))
 
         val dataSet = CsvLoader((json \ "dataset").as[String])
