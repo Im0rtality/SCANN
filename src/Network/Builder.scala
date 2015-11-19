@@ -15,6 +15,7 @@ object Builder {
 
         val network = new Network(dataSet.inputLayerSize, hidden.length, dataSet.outputLayerSize, Some(hidden))
         network.params = (json \ "parameters").as[Parameters]
+        network.cacheFile = (json \ "cache").as[String]
         network.initialize()
 
         (network, dataSet)

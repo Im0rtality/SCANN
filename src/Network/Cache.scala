@@ -1,18 +1,28 @@
 package Network
 
 import java.io.File
-
 import play.api.libs.json._
 import scala.io.Source
 import scalax.io.Resource
 
-class Cache(file: String) {
+object Cache {
+    def apply(network: Network, block: => Network): Network = {
+        if (has(network)) {
+            println("Cached weights found. Loading...")
+            get(network)
+        } else {
+            val result = block
+            set(result)
+            result
+        }
+    }
+
     var weights: List[List[List[Double]]] = _
 
-    def has(): Boolean = new File(file).exists()
+    def has(network: Network): Boolean = new File(network.cacheFile).exists()
 
     def get(network: Network): Network = {
-        val jsonString = Source.fromFile(file).mkString
+        val jsonString = Source.fromFile(network.cacheFile).mkString
         val jsonObj = Json.parse(jsonString)
         val weights = jsonObj.as[List[List[List[Double]]]]
         network.layers.drop(1).zip(weights).foreach({ case (l, w) => l.loadWeights(w) })
@@ -27,24 +37,10 @@ class Cache(file: String) {
             )
         )
 
-        val output = Resource.fromFile(file)
+        val output = Resource.fromFile(network.cacheFile)
         output.truncate(0)
         output.write(Json.toJson(weights).toString())
         network
-    }
-}
-
-object Cache {
-    def apply(file: String, network: Network, block: => Network): Network = {
-        val cache = new Cache(file)
-        if (cache.has()) {
-            println("Cached weights found. Loading...")
-            cache.get(network)
-        } else {
-            val result = block
-            cache.set(result)
-            result
-        }
     }
 }
 

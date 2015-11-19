@@ -14,6 +14,8 @@ class Network(inputs: Int, hiddenLayers: Int, outputs: Int, hiddenSizes: Option[
     var params: Parameters = Parameters.fresh()
     var layers: List[Layer] = _
 
+    var cacheFile: String = _
+
     def initialize() = {
         layers = List(new InputLayer(inputs))
         layers = layers ++ List.tabulate(hiddenLayers) {

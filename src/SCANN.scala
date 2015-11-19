@@ -4,7 +4,7 @@ object SCANN {
     def main(args: Array[String]) {
         var (network, dataset) = Builder.build("./data/iris.json")
 
-        network = Cache("./data/iris.ann", network, {
+        network = Cache(network, {
             network.train(dataset.input)
         })
 
