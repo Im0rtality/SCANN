@@ -29,7 +29,7 @@ abstract class Neuron(val id: Int, val sinapses: Int, val layer: Layer) {
         }
     }
 
-    def load(data: List[Double]) = {
+    def loadWeights(data: List[Double]) = {
         weights = DenseVector(data.toArray)
     }
 

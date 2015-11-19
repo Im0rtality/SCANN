@@ -34,11 +34,6 @@ class Network(inputs: Int, hiddenLayers: Int, outputs: Int, hiddenSizes: Option[
         layers
     }
 
-    def store(file: String) = {
-//        Resource.fromFile(file).truncate(0)
-//        Resource.fromFile(file).write(this.pickle.value)
-    }
-
     def calculate(input: DenseVector[Double]): DenseVector[Double] = {
         var output: DenseVector[Double] = input
         layers.foreach(layer => {
@@ -67,6 +62,8 @@ class Network(inputs: Int, hiddenLayers: Int, outputs: Int, hiddenSizes: Option[
             println(s"Iterations: \t$iteration")
             println("Error^2: \t\t%.5f".format(error))
         }, "TRAINING")
+
+        this
     }
 
     def validate(samples: List[Sample]): Double = {

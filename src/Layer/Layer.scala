@@ -33,7 +33,7 @@ abstract class Layer(val id: Int, val size: Int) {
         neurons.map(_.store())
     }
 
-    def load(data: List[List[Double]]) = {
-        neurons.zip(data).foreach({case (n,w) => n.load(w)})
+    def loadWeights(data: List[List[Double]]) = {
+        neurons.zip(data).foreach({case (n,w) => n.loadWeights(w)})
     }
 }
