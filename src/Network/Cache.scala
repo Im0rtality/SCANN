@@ -1,9 +1,11 @@
 package Network
 
 import java.io.File
+import java.nio.charset.StandardCharsets
+import java.nio.file._
 import play.api.libs.json._
+
 import scala.io.Source
-import scalax.io.Resource
 
 object Cache {
     def apply(network: Network, block: => Network): Network = {
@@ -37,9 +39,12 @@ object Cache {
             )
         )
 
-        val output = Resource.fromFile(network.cacheFile)
-        output.truncate(0)
-        output.write(Json.toJson(weights).toString())
+        Files.write(
+            Paths.get(network.cacheFile),
+            Json.toJson(weights).toString().getBytes(StandardCharsets.UTF_8),
+            StandardOpenOption.TRUNCATE_EXISTING
+        )
+
         network
     }
 }
