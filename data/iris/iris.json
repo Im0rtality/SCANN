@@ -9,5 +9,5 @@
         "hidden": [4]
     },
     "dataset": "./data/iris/iris.csv",
-    "cache": "./data/iris/iris.ann"
+    "cache": "./data/iris/iris-xvalidation-100%.ann"
 }

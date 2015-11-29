@@ -15,15 +15,15 @@ object SCANN {
             case Some(config) =>
                 var (network, dataset) = Builder.build(config.descriptor)
 
+                val (training, validation) = dataset.split()
+
                 network = Cache(network, {
-                    network.train(dataset.input)
+                    network.train(training.input)
                 })
 
-                val accuracy = network.validate(dataset.input)
+                val accuracy = network.validate(validation.input)
                 println("Accuracy:\t\t%.2f%%".format(accuracy * 100.0))
-
             case None =>
-
         }
     }
 }

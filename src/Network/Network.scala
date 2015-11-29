@@ -45,6 +45,7 @@ class Network(inputs: Int, hiddenLayers: Int, outputs: Int, hiddenSizes: Option[
     }
 
     def train(samples: List[Sample]) = {
+        printf("Training dataset size: %d\n", samples.length)
         Benchmark({
             var iteration = 0
             var error: Double = 0
@@ -59,20 +60,22 @@ class Network(inputs: Int, hiddenLayers: Int, outputs: Int, hiddenSizes: Option[
 
 
                 iteration += 1
-                println(s"#$iteration\t\tmax MSE: \t$error")
+                printf("#%04d\t\tmax MSE: \t%.5f\n",iteration, error)
             } while (params.error < error && iteration < params.epochs)
 
-            println(s"Iterations: \t$iteration")
-            println("Error^2: \t\t%.5f".format(error))
+            printf("Iterations: \t%d\n", iteration)
+            printf("Error^2: \t\t%.5f\n", error)
         }, "TRAINING")
 
         this
     }
 
     def validate(samples: List[Sample]): Double = {
+        println("Validation dataset size: %d".format(samples.length))
         val outputs = Benchmark({
             samples.map(sample => {
                 val output = calculate(sample.input)
+                println("\t error: " + (sample.target - output).toArray.map(d => "%.2f".format(d)).mkString(", "))
                 (output, sample.target, epsilonEquals(round(output), sample.target))
             })
         }, "VALIDATING")
