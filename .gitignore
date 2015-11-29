@@ -1,10 +1,9 @@
-*.class
 *.log
 
 # sbt specific
 .cache
 .history
-.lib/
+lib/
 dist/*
 target/
 lib_managed/

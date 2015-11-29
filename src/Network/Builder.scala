@@ -7,12 +7,17 @@ import Utils.Benchmark
 import play.api.libs.json.Json
 
 object Builder {
-    def build(descriptor: File): (Network, DataSet) = {
+    def build(descriptor: File): (Network, DataSet, DataSet) = {
         val json = Json.parse(new FileInputStream(descriptor))
 
         val dataSet = Benchmark({
             CsvLoader((json \ "dataset").as[String])
-        }, "Loading dataset")
+        }, "LOAD DATASET")
+
+        val classificationSet = Benchmark({
+            CsvLoader.loadClassification((json \ "classification").as[String], dataSet)
+        }, "LOAD CLASSIFICATION")
+
         println("DataSet size: %d items (%d inputs, %d outputs)"
             .format(dataSet.input.length, dataSet.inputLayerSize, dataSet.outputLayerSize))
 
@@ -23,6 +28,12 @@ object Builder {
         network.cacheFile = (json \ "cache").as[String]
         network.initialize()
 
-        (network, dataSet)
+        println("Network: %d-%s-%d".format(
+            dataSet.inputLayerSize,
+            hidden.map(_.toString).mkString("[", "-", "]"),
+            dataSet.outputLayerSize)
+        )
+
+        (network, dataSet, classificationSet)
     }
 }

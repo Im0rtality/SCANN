@@ -36,17 +36,18 @@ object Cache {
         network
     }
 
-    def set(network: Network): Network = {
-        val weights: List[List[List[Double]]] = network.layers.drop(1).map(
-            _.neurons.map(
-                _.weights.toArray.toList
+    def set(network: Network, suffix: String = ""): Network = {
+        if (network.cacheFile != "") {
+            val weights: List[List[List[Double]]] = network.layers.drop(1).map(
+                _.neurons.map(
+                    _.weights.toArray.toList
+                )
             )
-        )
 
-        val stream = new FileOutputStream(network.cacheFile, false)
-        stream.write(Json.toJson(weights).toString().getBytes(StandardCharsets.UTF_8))
-        stream.close()
-
+            val stream = new FileOutputStream(network.cacheFile + suffix, false)
+            stream.write(Json.toJson(weights).toString().getBytes(StandardCharsets.UTF_8))
+            stream.close()
+        }
         network
     }
 }

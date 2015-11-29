@@ -48,36 +48,46 @@ class Network(inputs: Int, hiddenLayers: Int, outputs: Int, hiddenSizes: Option[
         Benchmark({
             var iteration = 0
             var error: Double = 0
+            samples.map(s => calculate(s.input))
             do {
-                error = samples.map(sample => {
-                    val output = calculate(sample.input)
+                val errors = samples.map(sample => {
                     calculateError(sample.target)
                     calculateWeight()
 
-                    Functions.meanSquaredError(sample.target, output)
-                }).max
+                    val output = calculate(sample.input)
+                    Functions.error(sample.target, output)
+                })
 
-
+                error = errors.sum / errors.length
+                val correct = errors.count(e => Functions.isDiffPassing(e))
+                printIteration(iteration, error, correct * 100.0 / samples.length)
+                Cache.set(this, "%05d".format(iteration))
                 iteration += 1
-                println(s"#$iteration\t\tmax MSE: \t$error")
             } while (params.error < error && iteration < params.epochs)
 
-            println(s"Iterations: \t$iteration")
-            println("Error^2: \t\t%.5f".format(error))
-        }, "TRAINING")
+            val errors = samples.map(sample => {
+                Functions.error(sample.target, calculate(sample.input))
+            })
 
-        this
+            printIteration(iteration, errors.sum / errors.length, errors.count(e => Functions.isDiffPassing(e)) * 100.0 / samples.length)
+
+            println(s"Iterations: \t$iteration")
+            println("Error: \t\t%.5f".format(error))
+            this
+        }, "TRAINING")
     }
 
-    def validate(samples: List[Sample]): Double = {
-        val outputs = Benchmark({
+    def validate(samples: List[Sample]) = {
+        val errors = Benchmark({
             samples.map(sample => {
                 val output = calculate(sample.input)
-                (output, sample.target, epsilonEquals(round(output), sample.target))
+                Functions.error(sample.target, output)
             })
         }, "VALIDATING")
 
-        (0.0 + outputs.count({ case (_, _, pass) => pass })) / samples.size
+        val passing = errors.count(e => Functions.isDiffPassing(e, 0.1))
+        println("Error:\t\t\t%.5f".format(errors.sum / samples.length))
+        println("Accuracy:\t\t%.2f%% (%d/%d passing)".format(passing.toDouble / samples.size * 100.0, passing, samples.size))
     }
 
     def calculateError(target: DenseVector[Double]): List[Double] = {
@@ -91,6 +101,10 @@ class Network(inputs: Int, hiddenLayers: Int, outputs: Int, hiddenSizes: Option[
 
     override def toString: String = {
         params.toString + "\nArchitecture:\t" + layers.map(_.neurons.length).mkString("-")
+    }
+
+    def printIteration(iteration: Int, error: Double, correct: Double) = {
+        println("#%05d error: %.5f (%.2f%% correct)".format(iteration, error, correct))
     }
 }
 
