@@ -1,0 +1,14 @@
+{
+    "parameters": {
+        "rate": 0.3,
+        "momentum": 0.9,
+        "error": 0.02,
+        "epochs": 1000
+    },
+    "architecture": {
+        "hidden": [4]
+    },
+    "dataset": "data/iris/iris.csv",
+    "cache": "",
+    "classification": ""
+}

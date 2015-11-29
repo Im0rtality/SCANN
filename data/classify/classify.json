@@ -1,0 +1,14 @@
+{
+    "parameters": {
+        "rate": 0.3,
+        "momentum": 0.9,
+        "error": 0.01,
+        "epochs": 1000
+    },
+    "architecture": {
+        "hidden": [18]
+    },
+    "dataset": "data/htk.csv",
+    "cache": "data/classify/weights.ann",
+    "classification": "data/classify/hello.wav.csv"
+}

@@ -2,12 +2,12 @@
     "parameters": {
         "rate": 0.3,
         "momentum": 0.9,
-        "error": 0.005,
-        "epochs": 100
+        "error": 0.01,
+        "epochs": 1000
     },
     "architecture": {
         "hidden": [18]
     },
-    "dataset": "./data/htk.csv",
-    "cache": "./data/htk-100.ann"
+    "dataset": "./data/htk-small.csv",
+    "cache": "./data/htk1/htk.ann"
 }
