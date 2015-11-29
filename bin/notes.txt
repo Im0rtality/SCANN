@@ -1,0 +1,16 @@
+# Install HTK on Mac OS 10.11
+
+	Download and unpack sources
+
+	$ export CPPFLAGS=-UPHNALG
+	$ ./configure --without-x --disable-hslab
+	$ make all
+	$ sudo make install
+
+# Detection (requires pre-trained classifier)
+
+	1. Get audio sample in WAV format
+	2. $ bin/wav2csv.sh data/audio-sample.wav
+	3. Feed CSV to classifier to get matrix of class x probability x time
+	4. Calculate text string from matrix
+
