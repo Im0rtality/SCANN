@@ -8,6 +8,6 @@
     "architecture": {
         "hidden": [4]
     },
-    "dataset": "./data/iris.csv",
-    "cache": "./data/iris.ann"
+    "dataset": "./data/iris/iris.csv",
+    "cache": "./data/iris/iris.ann"
 }
